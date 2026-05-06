@@ -20,13 +20,32 @@ border = pygame.Rect(width//2-10,0,20,height)
 space=pygame.image.load("space.jpg")
 space=pygame.transform.scale(space,(width,height))
 
-def draw(r1,v1):
+def draw(r1,v1,rbullets,vbullets):
     screen.blit(space,(0,0))
     pygame.draw.rect(screen,"blue",border)
     # pygame.draw.rect(screen,"white",r1)
     # pygame.draw.rect(screen,"white",v1)
     screen.blit(vampire,(v1.x-40,v1.y))
     screen.blit(robot,(r1.x-40,r1.y))
+    for i in rbullets:
+        pygame.draw.rect(screen,"grey",i)
+    for i in vbullets:
+        pygame.draw.rect(screen,"red",i)
+def handlebullets(r1,v1,rbullets,vbullets):
+    for i in rbullets:
+        i.x-=10
+        if i.x <0:
+            rbullets.remove(i)
+    for i in vbullets:
+        i.x+=10
+        if i.x >width:
+            vbullets.remove(i)
+
+
+    
+
+
+
 
 def movement(r1,v1,button):
     # print(button)
@@ -53,17 +72,26 @@ def movement(r1,v1,button):
 def main():
     r1=pygame.Rect(rx,ry,80,140)
     v1=pygame.Rect(vx,vy,80,140)
+    rbullets=[]
+    vbullets=[]
     while True:
     
-        draw(r1,v1)
+        draw(r1,v1,rbullets,vbullets)
         for i in pygame.event.get():
             
             if i.type == pygame.QUIT :
                 pygame.quit()
+            if i.type== pygame.KEYDOWN:
+                if i.key == pygame.K_LSHIFT:
+                    b=pygame.Rect(v1.x-50,v1.y+50,50,15)
+                    vbullets.append(b)
+                if i.key == pygame.K_RSHIFT:
+                    b=pygame.Rect(r1.x-50,r1.y+50,50,15)
+                    rbullets.append(b)
         button=pygame.key.get_pressed()
         print(button)
         movement(r1,v1,button)
-        
+        handlebullets(r1,v1,rbullets,vbullets)
 
         pygame.display.update()
 
