@@ -19,7 +19,8 @@ vx,vy=120,height//2
 border = pygame.Rect(width//2-10,0,20,height)
 space=pygame.image.load("space.jpg")
 space=pygame.transform.scale(space,(width,height))
-
+bullet=pygame.image.load("vegetabullets.png")
+bullet=pygame.transform.scale(bullet,(100,100))
 def draw(r1,v1,rbullets,vbullets):
     screen.blit(space,(0,0))
     pygame.draw.rect(screen,"blue",border)
@@ -28,9 +29,11 @@ def draw(r1,v1,rbullets,vbullets):
     screen.blit(vampire,(v1.x-40,v1.y))
     screen.blit(robot,(r1.x-40,r1.y))
     for i in rbullets:
-        pygame.draw.rect(screen,"grey",i)
+        # pygame.draw.rect(screen,"grey",i)
+        screen.blit(bullet,(i.x,i.y))
     for i in vbullets:
-        pygame.draw.rect(screen,"red",i)
+        # pygame.draw.rect(screen,"red",i)
+        screen.blit(bullet,(i.x,i.y))
 def handlebullets(r1,v1,rbullets,vbullets):
     for i in rbullets:
         i.x-=10

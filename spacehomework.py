@@ -9,24 +9,43 @@ width,height=pyautogui.size()
 screen=pygame.display.set_mode((width,height))
 
 
-pygame.display.set_caption("The ultimate battle")
-Goku=pygame.transform.flip(pygame.image.load("GokuBlack.png"),True,False)
+pygame.display.set_caption("dbz arena")
+vegeta=pygame.transform.flip(pygame.image.load("vegeta.png"),True,False)
+vegeta=pygame.transform.scale(vegeta,(160,160))
+Goku=pygame.image.load("GokuBlack.png")
 Goku=pygame.transform.scale(Goku,(160,160))
-vegeta=pygame.image.load("vegeta.png")
-Vegeta=pygame.transform.scale(vegeta,(160,160))
-gx,gy=width-220,height//2
-vx,vy=120,height//2
+vx,vy=width-220,height//2
+gx,gy=120,height//2
 border = pygame.Rect(width//2-10,0,20,height)
-Arena=pygame.image.load("dgzarena.jpg")
-Arena=pygame.transform.scale(Arena,(width,height))
+dgz=pygame.image.load("dgzarena.jpg")
+dgz=pygame.transform.scale(dgz,(width,height))
 
-def draw(g1,v1):
-    screen.blit(Arena,(0,0))
+def draw(v1,g1,vbullets,gbullets):
+    screen.blit(dgz,(0,0))
     pygame.draw.rect(screen,"blue",border)
     # pygame.draw.rect(screen,"white",r1)
     # pygame.draw.rect(screen,"white",v1)
+    screen.blit(vegeta,(v1.x-40,v1.y))
     screen.blit(Goku,(g1.x-40,g1.y))
-    screen.blit(Vegeta,(v1.x-40,v1.y))
+    for i in gbullets:
+        pygame.image.load("gokubullets.avif")
+    for i in vbullets:
+        pygame.image.load(screen,"red",i)
+def handlebullets(g1,v1,gbullets,vbullets):
+    for i in gbullets:
+        i.x-=10
+        if i.x <0:
+            gbullets.remove(i)
+    for i in vbullets:
+        i.x+=10
+        if i.x >width:
+            vbullets.remove(i)
+
+
+    
+
+
+
 
 def movement(g1,v1,button):
     # print(button)
@@ -57,20 +76,22 @@ def main():
     vbullets=[]
     while True:
     
-        draw(g1,v1)
+        draw(g1,v1,gbullets,vbullets)
         for i in pygame.event.get():
             
             if i.type == pygame.QUIT :
                 pygame.quit()
             if i.type== pygame.KEYDOWN:
                 if i.key == pygame.K_LSHIFT:
-                    b=pygame.Rect(v1.x,v1.y,100,30)
+                    b=pygame.image.load("vegetabullets.png",v1.x-50,v1.y+50,50,15)
                     vbullets.append(b)
-                   
+                if i.key == pygame.K_RSHIFT:
+                    b=pygame.image.load("gokubullets.avif",g1.x-50,g1.y+50,50,15)
+                    gbullets.append(b)
         button=pygame.key.get_pressed()
-        # print(button)
+        print(button)
         movement(g1,v1,button)
-        
+        handlebullets(g1,v1,gbullets,vbullets)
 
         pygame.display.update()
 
