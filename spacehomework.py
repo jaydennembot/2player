@@ -9,90 +9,142 @@ width,height=pyautogui.size()
 screen=pygame.display.set_mode((width,height))
 
 
-pygame.display.set_caption("dbz arena")
-vegeta=pygame.transform.flip(pygame.image.load("vegeta.png"),True,False)
-vegeta=pygame.transform.scale(vegeta,(160,160))
+pygame.display.set_caption("space invasion")
+Vegeta=pygame.transform.flip(pygame.image.load("Vegeta.png"),True,False)
+Vegeta=pygame.transform.scale(Vegeta,(160,160))
 Goku=pygame.image.load("GokuBlack.png")
 Goku=pygame.transform.scale(Goku,(160,160))
-vx,vy=width-220,height//2
-gx,gy=120,height//2
+rx,ry=width-220,height//2
+vx,vy=120,height//2
 border = pygame.Rect(width//2-10,0,20,height)
-dgz=pygame.image.load("dgzarena.jpg")
-dgz=pygame.transform.scale(dgz,(width,height))
-
-def draw(v1,g1,vbullets,gbullets):
-    screen.blit(dgz,(0,0))
+space=pygame.image.load("dgzarena.jpg")
+space=pygame.transform.scale(space,(width,height))
+bullet=pygame.image.load("VegetaBullets.png")
+bullet=pygame.transform.scale(bullet,(100,100))
+bbullet=pygame.image.load("GokuBullets.png")
+bbullet=pygame.transform.scale(bbullet,(100,100))
+healthfont=pygame.font.SysFont("arial",60,True)
+textfont=pygame.font.SysFont("arial",40,True)
+Ghealth=10
+Vhealth=10
+GameState="start"
+def draw(r1,v1,Gbullets,Vbullets,Ghealth,Vhealth,winner):
+    screen.blit(space,(0,0))
     pygame.draw.rect(screen,"blue",border)
     # pygame.draw.rect(screen,"white",r1)
     # pygame.draw.rect(screen,"white",v1)
-    screen.blit(vegeta,(v1.x-40,v1.y))
-    screen.blit(Goku,(g1.x-40,g1.y))
-    for i in gbullets:
-        pygame.image.load("gokubullets.avif")
-    for i in vbullets:
-        pygame.image.load(screen,"red",i)
-def handlebullets(g1,v1,gbullets,vbullets):
-    for i in gbullets:
+    screen.blit(Vegeta,(v1.x-40,v1.y))
+    screen.blit(Goku,(r1.x-40,r1.y))
+    if GameState=="start":
+        message="this is a two player game ,control Vegeta with wasd and Goku with arrow keys \n Vegeta shoot leftshift and Goku shoot rightshift\nget hit and you lose one health\nthe person that loses 10 lives is the loser"
+        starttext=textfont.render(message,1,"white")
+        screen.blit(starttext,(width//3,height//3))
+    if GameState=="play":
+        for i in Gbullets:
+            # pygame.draw.rect(screen,"grey",i)
+            screen.blit(bullet,(i.x,i.y))
+        for i in Vbullets:
+            # pygame.draw.rect(screen,"red",i)
+            screen.blit(bbullet,(i.x,i.y))
+
+    Gtext=healthfont.render(f"health:{Ghealth}",1,"white")
+    Vtext=healthfont.render(f"health:{Vhealth}",1,"white")
+    screen.blit(Gtext,(width-300,50))
+    screen.blit(Vtext,(50,50))
+
+def handlebullets(r1,v1,Gbullets,Vbullets,Ghealth,Vhealth):
+    for i in Gbullets:
         i.x-=10
         if i.x <0:
-            gbullets.remove(i)
-    for i in vbullets:
+            Gbullets.remove(i)
+        if i.colliderect(v1):
+            Gbullets.remove(i)
+            Vhealth=Vhealth-1
+            print(Vhealth)
+        
+    for i in Vbullets:
         i.x+=10
         if i.x >width:
-            vbullets.remove(i)
+            Vbullets.remove(i)
+        if i.colliderect(r1):
+            Vbullets.remove(i)
+            Ghealth-=1
+            continue
+        for j in Gbullets:
+            if i.colliderect(j):
+                Vbullets.remove(i)
+                Gbullets.remove(j)
+                break
+    return Ghealth,Vhealth
 
 
-    
 
 
 
-
-def movement(g1,v1,button):
+def movement(G1,V1,button):
     # print(button)
-    if button[pygame.K_w]and v1.y>0:
-        v1.y-=10
-    if button[pygame.K_a]and v1.x>0 :
-        v1.x-=10
-    if button[pygame.K_s]and v1.y<height-v1.height:
-        v1.y+=10
-    if button[pygame.K_d]and v1.x<border.x-v1.width:
-        v1.x+=10
+    if button[pygame.K_w]and V1.y>0:
+        V1.y-=10
+    if button[pygame.K_a]and V1.x>0 :
+        V1.x-=10
+    if button[pygame.K_s]and V1.y<height-V1.height:
+        V1.y+=10
+    if button[pygame.K_d]and V1.x<border.x-V1.width:
+        V1.x+=10
         print("hello")
-    if button[pygame.K_UP]and g1.y>0:
-        g1.y-=10
-    if button[pygame.K_DOWN]and g1.y<height-g1.height:
-        g1.y+=10
-    if button[pygame.K_LEFT]and g1.x>border.x+border.width:
-        g1.x-=10
-    if button[pygame.K_RIGHT]and g1.x<width-g1.width:
-        g1.x+=10
+    if button[pygame.K_UP]and G1.y>0:
+        G1.y-=10
+    if button[pygame.K_DOWN]and G1.y<height-G1.height:
+        G1.y+=10
+    if button[pygame.K_LEFT]and G1.x>border.x+border.width:
+        G1.x-=10
+    if button[pygame.K_RIGHT]and G1.x<width-G1.width:
+        G1.x+=10
     
 
 
 def main():
-    g1=pygame.Rect(gx,gy,80,140)
-    v1=pygame.Rect(vx,vy,80,140)
-    gbullets=[]
-    vbullets=[]
+    global GameState,Ghealth,Vhealth
+    G1=pygame.Rect(rx,ry,80,140)
+    V1=pygame.Rect(vx,vy,80,140)
+    Gbullets=[]
+    Vbullets=[]
+    # Ghealth=10
+    # Vhealth=10
+    winner=None
     while True:
     
-        draw(g1,v1,gbullets,vbullets)
+        draw(G1,V1,Gbullets,Vbullets,Ghealth,Vhealth,winner)
+        # print(GameState)
         for i in pygame.event.get():
             
             if i.type == pygame.QUIT :
                 pygame.quit()
             if i.type== pygame.KEYDOWN:
-                if i.key == pygame.K_LSHIFT:
-                    b=pygame.image.load("vegetabullets.png",v1.x-50,v1.y+50,50,15)
-                    vbullets.append(b)
-                if i.key == pygame.K_RSHIFT:
-                    b=pygame.image.load("gokubullets.avif",g1.x-50,g1.y+50,50,15)
-                    gbullets.append(b)
-        button=pygame.key.get_pressed()
-        print(button)
-        movement(g1,v1,button)
-        handlebullets(g1,v1,gbullets,vbullets)
+                if i.key == pygame.K_SPACE and GameState !="play":
+                    GameState="play"
+                    Vhealth=10
+                    Ghealth=10
+                    winner=None
+                    Gbullets=[]
+                    Vbullets=[]
 
+                if i.key == pygame.K_LSHIFT :
+                    b=pygame.Rect(V1.x-50,V1.y+50,50,15)
+                    Vbullets.append(b)
+                if i.key == pygame.K_RSHIFT:
+                    b=pygame.Rect(G1.x-50,G1.y+50,50,15)
+                    Gbullets.append(b)
+        button=pygame.key.get_pressed()
+        movement(G1,V1,button)
+    
+        Ghealth,Vhealth=handlebullets(G1,V1,Gbullets,Vbullets,Ghealth,Vhealth)
+        if Ghealth==0:
+            winner="Vegeta wins"
+        if Vhealth==0:
+            winner="Goku wins"
+        if winner:
+            GameState="end"
         pygame.display.update()
 
 
@@ -100,4 +152,5 @@ def main():
 
 
 main()
+
 

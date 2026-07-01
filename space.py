@@ -19,10 +19,10 @@ vx,vy=120,height//2
 border = pygame.Rect(width//2-10,0,20,height)
 space=pygame.image.load("space.jpg")
 space=pygame.transform.scale(space,(width,height))
-bullet=pygame.image.load("vegetabullets.png")
+bullet=pygame.image.load("VegetaBullets.png")
 bullet=pygame.transform.scale(bullet,(100,100))
-bbullet=pygame.image.load("bball.png")
-bbullet=pygame.transform.scale(bbullet,(100,100))
+Goku=pygame.image.load("GokuBullets.png")
+Goku=pygame.transform.scale(Goku,(100,100))
 healthfont=pygame.font.SysFont("arial",60,True)
 textfont=pygame.font.SysFont("arial",40,True)
 rhealth=10
@@ -45,7 +45,7 @@ def draw(r1,v1,rbullets,vbullets,rhealth,vhealth,winner):
             screen.blit(bullet,(i.x,i.y))
         for i in vbullets:
             # pygame.draw.rect(screen,"red",i)
-            screen.blit(bbullet,(i.x,i.y))
+            screen.blit(Goku,(i.x,i.y))
 
     rtext=healthfont.render(f"health:{rhealth}",1,"white")
     vtext=healthfont.render(f"health:{vhealth}",1,"white")
