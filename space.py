@@ -20,9 +20,9 @@ border = pygame.Rect(width//2-10,0,20,height)
 space=pygame.image.load("space.jpg")
 space=pygame.transform.scale(space,(width,height))
 bullet=pygame.image.load("VegetaBullets.png")
-bullet=pygame.transform.scale(bullet,(100,100))
+bullet=pygame.transform.scale(bullet,(50,50))
 Goku=pygame.image.load("GokuBullets.png")
-Goku=pygame.transform.scale(Goku,(100,100))
+Goku=pygame.transform.scale(Goku,(50,50))
 healthfont=pygame.font.SysFont("arial",60,True)
 textfont=pygame.font.SysFont("arial",40,True)
 rhealth=10
@@ -39,13 +39,17 @@ def draw(r1,v1,rbullets,vbullets,rhealth,vhealth,winner):
         message="this is a two player game ,control vampire with wasd and robot with arrow keys \n vampire shoot leftshift and robot shoot rightshift\nget hit and you lose one health\nthe person that loses 10 lives is the loser"
         starttext=textfont.render(message,1,"white")
         screen.blit(starttext,(width//3,height//3))
-    if GameState=="play":
+    elif GameState=="play":
         for i in rbullets:
             # pygame.draw.rect(screen,"grey",i)
             screen.blit(bullet,(i.x,i.y))
         for i in vbullets:
             # pygame.draw.rect(screen,"red",i)
             screen.blit(Goku,(i.x,i.y))
+    else: 
+        message=f"{winner} press space to restart"
+        starttext=textfont.render(message,1,"white")
+        screen.blit(starttext,(width//3,height//3))
 
     rtext=healthfont.render(f"health:{rhealth}",1,"white")
     vtext=healthfont.render(f"health:{vhealth}",1,"white")
@@ -126,19 +130,22 @@ def main():
                     vhealth=10
                     rhealth=10
                     winner=None
-                    rbullets=[]
-                    vbullets=[]
+                    # rbullets=[]
+                    # vbullets=[]
+            
 
-                if i.key == pygame.K_LSHIFT :
-                    b=pygame.Rect(v1.x-50,v1.y+50,50,15)
+                if i.key == pygame.K_LSHIFT and GameState=="play": 
+                    b=pygame.Rect(v1.x-50,v1.y+50,50,50)
                     vbullets.append(b)
-                if i.key == pygame.K_RSHIFT:
-                    b=pygame.Rect(r1.x-50,r1.y+50,50,15)
+                if i.key == pygame.K_RSHIFT and GameState=="play":
+                    b=pygame.Rect(r1.x-50,r1.y+50,50,50)
                     rbullets.append(b)
-        button=pygame.key.get_pressed()
-        movement(r1,v1,button)
+        
+        if GameState=="play":
+            button=pygame.key.get_pressed()
+            movement(r1,v1,button)
     
-        rhealth,vhealth=handlebullets(r1,v1,rbullets,vbullets,rhealth,vhealth)
+            rhealth,vhealth=handlebullets(r1,v1,rbullets,vbullets,rhealth,vhealth)
         if rhealth==0:
             winner="vampire wins"
         if vhealth==0:
